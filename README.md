@@ -1,6 +1,6 @@
 # Interview Trainer
 
-Une application de révision inspirée d’Anki pour préparer des entretiens.
+Une web-app personnelle de révision inspirée d’Anki pour préparer des entretiens. Elle est pensée pour le téléphone et l’ordinateur, avec un compte unique et une progression synchronisée.
 
 ## Vision
 
@@ -22,6 +22,28 @@ Transformer les questions d’entretien en cartes mémorisables grâce à la ré
 4. Il tente de répondre avant de révéler la fiche.
 5. Son évaluation planifie la prochaine révision.
 
-## État
+## Stack
 
-Projet initialisé. Le choix de la stack et la réalisation du premier écran sont les prochaines étapes.
+- Next.js, React et TypeScript
+- Tailwind CSS et composants personnalisés
+- Supabase Auth + PostgreSQL
+- Vercel pour l’hébergement
+
+## Lancer le projet
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Ouvrir ensuite `http://localhost:3000`.
+
+## Brancher Supabase
+
+1. Créer un projet Supabase.
+2. Exécuter la migration dans `supabase/migrations` depuis le SQL Editor.
+3. Copier `.env.example` vers `.env.local`.
+4. Ajouter l’URL du projet et sa clé publique anonyme.
+5. Ajouter l’URL locale et la future URL Vercel aux URL de redirection Auth.
+
+Sans ces variables, l’application reste volontairement en mode démo.
