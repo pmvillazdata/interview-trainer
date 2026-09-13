@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
+import { IFRS_DECK, IFRS_DECK_TITLE } from "@/data/ifrs-deck";
 import { createClient } from "@/lib/supabase/client";
 import type { AppUser, Deck, StudyCard } from "@/lib/types";
 
@@ -101,6 +102,7 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
   const currentCard = cards[0];
   const displayDecks = initialUser ? decks : demoDecks;
   const initials = initialUser?.email.slice(0, 2).toUpperCase() ?? "PM";
+  const hasIfrsDeck = decks.some((deck) => deck.title === IFRS_DECK_TITLE);
 
   async function gradeCard(grade: Grade) {
     if (!currentCard) return;
@@ -171,6 +173,45 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
     setDecks((value) => value.map((item) => item.id === data.deck_id ? { ...item, cards: item.cards + 1, due: item.due + 1 } : item));
     setShowCardForm(false);
     setMessage("Carte ajoutée à la session du jour.");
+  }
+
+  async function installIfrsDeck() {
+    if (!initialUser) return router.push("/login");
+    if (hasIfrsDeck) return setMessage("Ce paquet est déjà dans ta bibliothèque.");
+
+    setSaving(true);
+    setMessage("");
+    const supabase = createClient();
+    const { data: deck, error: deckError } = await supabase.from("decks").insert({
+      user_id: initialUser.id,
+      title: IFRS_DECK.title,
+      description: IFRS_DECK.description,
+      color: IFRS_DECK.color,
+    }).select("id,title,description,color").single();
+
+    if (deckError || !deck) {
+      setSaving(false);
+      return setMessage("Impossible d’ajouter le paquet IFRS.");
+    }
+
+    const { data: newCards, error: cardsError } = await supabase.from("cards").insert(
+      IFRS_DECK.cards.map((card) => ({
+        deck_id: deck.id,
+        question: card.question,
+        answer: card.answer,
+      })),
+    ).select("id,deck_id,question,answer,due_at,reps,lapses,state");
+
+    if (cardsError || !newCards) {
+      await supabase.from("decks").delete().eq("id", deck.id);
+      setSaving(false);
+      return setMessage("Les cartes IFRS n’ont pas pu être ajoutées.");
+    }
+
+    setDecks((value) => [...value, { ...deck, cards: newCards.length, due: newCards.length }]);
+    setCards((value) => [...value, ...newCards.map((card) => ({ ...card, deckTitle: deck.title }))]);
+    setSaving(false);
+    setMessage("Le paquet IFRS et ses 50 cartes sont prêts.");
   }
 
   async function signOut() {
@@ -312,6 +353,21 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
                   </article>
                 );
               })}
+
+              {initialUser && !hasIfrsDeck && (
+                <article className="starter-deck-card">
+                  <div className="starter-deck-topline">
+                    <span>Nouveau paquet</span>
+                    <strong>50 cartes</strong>
+                  </div>
+                  <div className="starter-deck-icon"><BookOpen size={22} /></div>
+                  <h3>IFRS &amp; French GAAP</h3>
+                  <p>Les différences essentielles pour passer des comptes français aux IFRS et réussir tes entretiens.</p>
+                  <button disabled={saving} onClick={installIfrsDeck}>
+                    {saving ? <><LoaderCircle className="spin" size={17} /> Ajout en cours…</> : <><Plus size={17} /> Ajouter à mes paquets</>}
+                  </button>
+                </article>
+              )}
             </div>
           </section>
         </div>
