@@ -70,6 +70,7 @@ a { color: inherit; text-decoration: none; }
 .search-wrap kbd { padding: 3px 6px; border: 1px solid #e3ded7; border-radius: 6px; color: #918c85; background: #faf8f5; font-size: 10px; white-space: nowrap; }
 .login-link { font-size: 13px; font-weight: 700; color: #5a5651; }
 .login-link:hover { color: var(--coral); }
+.logout-button { display: flex; align-items: center; gap: 7px; border: 0; background: transparent; cursor: pointer; }
 .content-wrap { width: min(1120px, calc(100% - 72px)); margin: 0 auto; padding: 52px 0 70px; }
 .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 32px; }
 .eyebrow { margin: 0 0 9px; color: #9b968e; font-size: 11px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
@@ -102,6 +103,7 @@ a { color: inherit; text-decoration: none; }
 .answer-panel p:last-child { margin: 0; color: #5e5852; font-size: 14px; line-height: 1.65; }
 .grade-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 13px; }
 .grade-button { padding: 10px 5px; border: 1px solid var(--line); border-radius: 10px; background: white; cursor: pointer; }
+.grade-button:disabled { opacity: .5; cursor: wait; }
 .grade-button strong, .grade-button span { display: block; }
 .grade-button strong { font-size: 11px; }
 .grade-button span { margin-top: 3px; color: #99938c; font-size: 9px; }
@@ -146,6 +148,25 @@ a { color: inherit; text-decoration: none; }
 .deck-stats { display: flex; align-items: center; justify-content: space-between; padding-top: 15px; border-top: 1px solid #f0ece7; font-size: 10px; }
 .deck-stats span { display: flex; align-items: center; gap: 6px; color: #96908a; }
 .deck-stats strong { color: #d45343; font-size: 10px; }
+.empty-review { min-height: 284px; display: grid; place-items: center; align-content: center; gap: 8px; padding: 30px; border: 1px dashed #dcd5cd; border-radius: 17px; text-align: center; background: #fffdfa; }
+.empty-review svg { color: var(--mint); width: 38px; height: 38px; }
+.empty-review h3, .empty-review p { margin: 0; }
+.empty-review h3 { font-family: Georgia, serif; font-size: 25px; font-weight: 500; }
+.empty-review p { color: var(--muted); font-size: 13px; }
+
+.toast { position: fixed; right: 24px; bottom: 24px; z-index: 60; padding: 13px 17px; border: 0; border-radius: 12px; color: white; background: #292724; cursor: pointer; box-shadow: var(--shadow); font-size: 12px; font-weight: 700; }
+.modal-backdrop { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 20px; background: rgba(30,28,25,.48); backdrop-filter: blur(5px); }
+.modal-card { position: relative; width: min(520px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; padding: 34px; border-radius: 21px; background: white; box-shadow: 0 30px 90px rgba(0,0,0,.22); }
+.modal-card h2 { margin: 0 0 25px; font-family: Georgia, serif; font-size: 30px; font-weight: 500; letter-spacing: -.03em; }
+.modal-card label { display: grid; gap: 7px; margin-top: 15px; color: #5c5751; font-size: 12px; font-weight: 750; }
+.modal-card input, .modal-card select, .modal-card textarea { width: 100%; padding: 12px 13px; border: 1px solid #ddd7cf; border-radius: 11px; outline: 0; background: white; color: var(--ink); font: inherit; font-size: 13px; }
+.modal-card textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+.modal-card input:focus, .modal-card select:focus, .modal-card textarea:focus { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-soft); }
+.modal-close { position: absolute; right: 17px; top: 17px; width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #77716a; background: #f5f2ee; cursor: pointer; }
+.modal-close svg { width: 17px; }
+.modal-submit { width: 100%; min-height: 47px; display: flex; align-items: center; justify-content: center; margin-top: 22px; border: 0; border-radius: 12px; color: white; background: #292724; cursor: pointer; font-weight: 750; }
+.modal-submit:disabled { opacity: .5; }
+.empty-form { padding: 20px 0 4px; color: var(--muted); text-align: center; }
 
 .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; background: radial-gradient(circle at 20% 10%, #fff0eb 0, transparent 32%), var(--paper); }
 .back-link { position: absolute; top: 28px; left: 32px; display: flex; align-items: center; gap: 7px; color: #716b64; font-size: 13px; font-weight: 700; }
@@ -219,4 +240,6 @@ a { color: inherit; text-decoration: none; }
   .auth-card { padding: 32px 24px; border-radius: 20px; }
   .auth-card h1 { font-size: 32px; }
   .back-link { top: 20px; left: 20px; }
+  .modal-card { padding: 28px 20px; }
+  .toast { right: 15px; bottom: 94px; left: 15px; }
 }

@@ -22,7 +22,7 @@ export default function LoginPage() {
     const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin },
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
 
     setLoading(false);
@@ -48,7 +48,7 @@ export default function LoginPage() {
           <>
             <p className="eyebrow">TON ESPACE PERSONNEL</p>
             <h1>Retrouve tes révisions partout.</h1>
-            <p className="auth-copy">Un seul compte pour garder tes cartes, ton historique et ta progression sur ton téléphone et tes ordinateurs.</p>
+            <p className="auth-copy">Un seul compte pour garder tes cartes, ton historique et ta progression sur ton téléphone et tes ordinateurs. Aucun mot de passe à retenir.</p>
             <form onSubmit={handleSubmit} className="auth-form">
               <label htmlFor="email">Adresse email</label>
               <div className="email-field"><Mail size={18} /><input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="toi@exemple.com" required /></div>
