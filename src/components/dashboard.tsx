@@ -343,7 +343,7 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
                     <div className={`deck-icon deck-${deck.color}`}><Icon size={21} /></div>
                     <div className="deck-title-row">
                       <h3>{deck.title}</h3>
-                      <button className="round-arrow" aria-label={`Ouvrir ${deck.title}`}><ChevronRight size={18} /></button>
+                      <Link className="round-arrow" href={initialUser ? `/decks/${deck.id}` : "/login"} aria-label={`Ouvrir ${deck.title}`}><ChevronRight size={18} /></Link>
                     </div>
                     <p>{"subtitle" in deck ? deck.subtitle : deck.description || "Ton prochain sujet d’entraînement"}</p>
                     <div className="deck-stats">
