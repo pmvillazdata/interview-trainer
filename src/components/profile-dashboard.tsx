@@ -50,7 +50,7 @@ export function ProfileDashboard({ email, decks, cards, reviews, isDemo }: { ema
   return <main className="profile-page">
     <header className="profile-header"><Link href="/"><ArrowLeft size={17} /> Aujourd’hui</Link><span>{isDemo ? "Aperçu en mode visite" : "Statistiques synchronisées"}</span></header>
     <div className="profile-content">
-      <section className="profile-intro"><div className="profile-big-avatar">{initials}</div><div><p className="eyebrow">{isDemo ? "Mode visite" : "Mon profil"}</p><h1>{isDemo ? "Aperçu du profil" : email.split("@")[0]}</h1><p>{isDemo ? "Données de démonstration — aucune donnée personnelle affichée" : email}</p></div></section>
+      <section className="profile-intro"><div className="profile-big-avatar">{initials}</div><div><p className="eyebrow">{isDemo ? "Mode visite" : "Mon profil"}</p><h1>{isDemo ? "Profil QA" : email.split("@")[0]}</h1><p>{isDemo ? "Compte de recette en lecture seule" : email}</p></div></section>
       <section className="profile-filters"><label><CalendarDays size={15} /> Période<select value={period} onChange={event => setPeriod(event.target.value as Period)}><option value="7">7 derniers jours</option><option value="30">30 derniers jours</option><option value="all">Depuis le début</option></select></label><label><Layers3 size={15} /> Paquet<select value={deckId} onChange={event => setDeckId(event.target.value)}><option value="all">Tous les paquets</option>{decks.map(deck => <option value={deck.id} key={deck.id}>{deck.title}</option>)}</select></label></section>
       <section className="profile-kpis">
         <article><span><BookOpen /></span><div><p>Cartes jouées</p><b>{stats.played}</b><small>sur la période</small></div></article>

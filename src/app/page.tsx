@@ -1,17 +1,19 @@
 import { Dashboard } from "@/components/dashboard";
+import { isPreviewVisitor } from "@/data/preview-data";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 import type { Deck, StudyCard } from "@/lib/types";
 
 export default async function Home() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) redirect("/profile");
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
   let decks: Deck[] = [];
   let cards: StudyCard[] = [];
+  let initialUser = null;
+  const visitorMode = isPreviewVisitor();
 
-  if (user) {
+  if (!visitorMode) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    initialUser = user ? { id: user.id, email: user.email ?? "" } : null;
+    if (user) {
     const [{ data: deckRows }, { data: cardRows }] = await Promise.all([
       supabase.from("decks").select("id,title,description,color,cards(id,due_at)").order("created_at"),
       supabase.from("cards").select("id,deck_id,question,answer,due_at,reps,lapses,state,decks(title)").lte("due_at", new Date().toISOString()).order("due_at").limit(50),
@@ -39,6 +41,7 @@ export default async function Home() {
         deckTitle: relatedDeck?.title ?? "Sans paquet",
       };
     });
+    }
   }
 
   const today = new Intl.DateTimeFormat("fr-FR", {
@@ -49,5 +52,5 @@ export default async function Home() {
     timeZone: "Europe/Paris",
   }).format(new Date());
 
-  return <Dashboard today={today} initialUser={user ? { id: user.id, email: user.email ?? "" } : null} initialDecks={decks} initialCards={cards} />;
+  return <Dashboard today={today} isVisitor={visitorMode} initialUser={initialUser} initialDecks={decks} initialCards={cards} />;
 }

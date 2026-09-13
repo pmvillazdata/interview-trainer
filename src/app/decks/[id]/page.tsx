@@ -1,9 +1,15 @@
 import { notFound, redirect } from "next/navigation";
 import { DeckDetail } from "@/components/deck-detail";
+import { isPreviewVisitor, previewCards, previewDecks } from "@/data/preview-data";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DeckPage({ params }: PageProps<"/decks/[id]">) {
   const { id } = await params;
+  if (isPreviewVisitor()) {
+    const previewDeck = previewDecks.find((deck) => deck.id === id);
+    if (!previewDeck) notFound();
+    return <DeckDetail readOnly deck={previewDeck} initialCards={previewCards.filter((card) => card.deck_id === id)} />;
+  }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");

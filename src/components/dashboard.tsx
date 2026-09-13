@@ -31,8 +31,8 @@ const demoDecks = [
     id: "demo-product",
     title: "Product sense",
     subtitle: "Questions produit & stratégie",
-    cards: 42,
-    due: 8,
+    cards: 6,
+    due: 6,
     color: "coral",
     icon: Target,
   },
@@ -40,7 +40,7 @@ const demoDecks = [
     id: "demo-star",
     title: "Expériences passées",
     subtitle: "Méthode STAR & leadership",
-    cards: 31,
+    cards: 6,
     due: 6,
     color: "violet",
     icon: BriefcaseBusiness,
@@ -49,8 +49,8 @@ const demoDecks = [
     id: "demo-culture",
     title: "Culture & motivation",
     subtitle: "Valeurs, rôle et entreprise",
-    cards: 24,
-    due: 4,
+    cards: 6,
+    due: 6,
     color: "mint",
     icon: Sparkles,
   },
@@ -82,6 +82,7 @@ function getNextDueDate(grade: Grade) {
 
 type DashboardProps = {
   today: string;
+  isVisitor: boolean;
   initialUser: AppUser | null;
   initialDecks: Deck[];
   initialCards: StudyCard[];
@@ -94,7 +95,7 @@ const greetings = [
   "Dia dhuit", "Bongu",
 ] as const;
 
-export function Dashboard({ today, initialUser, initialDecks, initialCards }: DashboardProps) {
+export function Dashboard({ today, isVisitor, initialUser, initialDecks, initialCards }: DashboardProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [answerVisible, setAnswerVisible] = useState(false);
@@ -112,7 +113,7 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
   const progress = useMemo(() => total ? Math.round((reviewed / total) * 100) : 100, [reviewed, total]);
   const currentCard = cards[0];
   const displayDecks = initialUser ? decks : demoDecks;
-  const initials = initialUser?.email.slice(0, 2).toUpperCase() ?? "PM";
+  const initials = isVisitor ? "QA" : initialUser?.email.slice(0, 2).toUpperCase() ?? "PM";
   const hasIfrsDeck = decks.some((deck) => deck.title === IFRS_DECK_TITLE);
 
   useEffect(() => {
@@ -279,8 +280,8 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
           <button className="profile-card" aria-expanded={profileMenuOpen} aria-haspopup="menu" onClick={() => initialUser ? setProfileMenuOpen((open) => !open) : router.push("/profile")}>
             <div className="avatar">{initials}</div>
             <div>
-              <p className="profile-name">{initialUser ? initialUser.email.split("@")[0] : "Mon espace"}</p>
-              <p className="profile-state">{initialUser ? "Synchronisé" : "Mode démo"}</p>
+              <p className="profile-name">{isVisitor ? "Profil QA" : initialUser ? initialUser.email.split("@")[0] : "Mon espace"}</p>
+              <p className="profile-state">{isVisitor ? "Mode visite" : initialUser ? "Synchronisé" : "Mode démo"}</p>
             </div>
             <ChevronRight size={18} />
           </button>
@@ -295,7 +296,7 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
             <Menu size={22} />
           </button>
           <div className="mobile-brand"><span>I</span> Interview Trainer</div>
-          {!initialUser && <Link className="login-link" href="/login">Se connecter</Link>}
+          {!initialUser && !isVisitor && <Link className="login-link" href="/login">Se connecter</Link>}
         </header>
 
         <div className="content-wrap">
@@ -371,7 +372,7 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
                     <div className={`deck-icon deck-${deck.color}`}><Icon size={21} /></div>
                     <div className="deck-title-row">
                       <h3>{deck.title}</h3>
-                      <Link className="round-arrow" href={initialUser ? `/decks/${deck.id}` : "/login"} aria-label={`Ouvrir ${deck.title}`}><ChevronRight size={18} /></Link>
+                      <Link className="round-arrow" href={initialUser || isVisitor ? `/decks/${deck.id}` : "/login"} aria-label={`Ouvrir ${deck.title}`}><ChevronRight size={18} /></Link>
                     </div>
                     <p>{"subtitle" in deck ? deck.subtitle : deck.description || "Ton prochain sujet d’entraînement"}</p>
                     <div className="deck-stats">

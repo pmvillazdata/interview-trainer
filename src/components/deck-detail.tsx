@@ -9,7 +9,7 @@ import { difficultyLabels, encodeQuestionContent, parseQuestionContent, typeLabe
 type Deck = { id: string; title: string; description: string | null; color: string };
 type Card = { id: string; deck_id: string; question: string; answer: string; due_at: string; reps: number; lapses: number; state: string };
 
-export function DeckDetail({ deck, initialCards }: { deck: Deck; initialCards: Card[] }) {
+export function DeckDetail({ deck, initialCards, readOnly = false }: { deck: Deck; initialCards: Card[]; readOnly?: boolean }) {
   const [cards, setCards] = useState(initialCards);
   const [openCard, setOpenCard] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -50,7 +50,7 @@ export function DeckDetail({ deck, initialCards }: { deck: Deck; initialCards: C
   return <main className="deck-page">
     <header className="deck-detail-header">
       <Link href="/#decks"><ArrowLeft size={17} /> Mes paquets</Link>
-      <button onClick={() => setShowForm(true)}><Plus size={17} /> Ajouter une question</button>
+      {readOnly ? <span className="preview-readonly">Mode visite · lecture seule</span> : <button onClick={() => setShowForm(true)}><Plus size={17} /> Ajouter une question</button>}
     </header>
     <div className="deck-detail-content">
       <section className="deck-detail-title">
@@ -67,7 +67,7 @@ export function DeckDetail({ deck, initialCards }: { deck: Deck; initialCards: C
             {isOpen && <div className="deck-answer">
               {content.type === "multiple_choice" && <div className="deck-options">{content.options.map((option, i) => <span className={i === content.correctOption ? "correct" : ""} key={option}>{i === content.correctOption && <Check size={13} />}{option}</span>)}</div>}
               {content.answer && <p><b>Réponse</b>{content.answer}</p>}
-              <button onClick={() => removeCard(card.id)}><Trash2 size={14} /> Supprimer</button>
+              {!readOnly && <button onClick={() => removeCard(card.id)}><Trash2 size={14} /> Supprimer</button>}
             </div>}
           </article>;
         })}
@@ -75,7 +75,7 @@ export function DeckDetail({ deck, initialCards }: { deck: Deck; initialCards: C
       </section>
     </div>
     {message && <button className="toast" onClick={() => setMessage("")}>{message}</button>}
-    {showForm && <div className="modal-backdrop"><form className="modal-card" onSubmit={addQuestion}>
+    {showForm && !readOnly && <div className="modal-backdrop"><form className="modal-card" onSubmit={addQuestion}>
       <button type="button" className="modal-close" onClick={() => setShowForm(false)}><X /></button><p className="eyebrow">NOUVELLE QUESTION</p><h2>Choisis son format</h2>
       <div className="question-type-picker"><button type="button" className={type === "simple" ? "selected" : ""} onClick={() => setType("simple")}><BookOpen /><span><b>Réponse à révéler</b><small>Question puis réponse libre</small></span></button><button type="button" className={type === "multiple_choice" ? "selected" : ""} onClick={() => setType("multiple_choice")}><Check /><span><b>Choix multiple</b><small>Plusieurs choix, une réponse</small></span></button></div>
       <label>Difficulté<select name="difficulty" defaultValue="intermediate"><option value="beginner">Débutant</option><option value="intermediate">Intermédiaire</option><option value="advanced">Avancé</option></select></label>
