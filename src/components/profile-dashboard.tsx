@@ -1,8 +1,10 @@
 "use client";
 
-import { ArrowLeft, BarChart3, BookOpen, CalendarDays, CheckCircle2, Layers3, Target } from "lucide-react";
+import { BarChart3, BookOpen, CalendarDays, CheckCircle2, ChevronRight, Home, Layers3, LogOut, Menu, Target, UserRound, X } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { difficultyLabels, parseQuestionContent, typeLabels } from "@/lib/question-content";
 
 type Deck = { id: string; title: string };
@@ -14,9 +16,27 @@ const resultLabels = ["À revoir", "Difficile", "Bien", "Facile"];
 const resultColors = ["#d87368", "#d9a441", "#2f9d78", "#3975c6"];
 
 export function ProfileDashboard({ email, decks, cards, reviews, isDemo }: { email: string; decks: Deck[]; cards: Card[]; reviews: Review[]; isDemo: boolean }) {
+  const router = useRouter();
   const [period, setPeriod] = useState<Period>("30");
   const [deckId, setDeckId] = useState("all");
   const [now] = useState(() => Date.now());
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function closeProfileMenu(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) setProfileMenuOpen(false);
+    }
+    document.addEventListener("mousedown", closeProfileMenu);
+    return () => document.removeEventListener("mousedown", closeProfileMenu);
+  }, []);
+
+  async function signOut() {
+    await createClient().auth.signOut({ scope: "local" });
+    router.push("/");
+    router.refresh();
+  }
 
   const stats = useMemo(() => {
     const cardMap = new Map(cards.map(card => [card.id, card]));
@@ -47,8 +67,23 @@ export function ProfileDashboard({ email, decks, cards, reviews, isDemo }: { ema
   const totalResults = Math.max(stats.filtered.length, 1);
   const initials = email.slice(0, 2).toUpperCase();
 
-  return <main className="profile-page">
-    <header className="profile-header"><Link href="/"><ArrowLeft size={17} /> Aujourd’hui</Link><span>{isDemo ? "Aperçu en mode visite" : "Statistiques synchronisées"}</span></header>
+  return <div className="app-shell">
+    <aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}>
+      <div className="brand-row"><div className="brand-mark">I</div><div><p className="brand-name">Interview</p><p className="brand-name brand-accent">Trainer</p></div><button className="icon-button close-menu" onClick={() => setMenuOpen(false)} aria-label="Fermer le menu"><X size={20} /></button></div>
+      <nav className="main-nav" aria-label="Navigation principale">
+        <Link className="nav-item" href="/"><Home size={19} /> Aujourd’hui</Link>
+        <Link className="nav-item" href="/#decks"><Layers3 size={19} /> Mes paquets</Link>
+        <Link className="nav-item nav-item-active" href="/profile"><UserRound size={19} /> Mon profil</Link>
+      </nav>
+      <div className="sidebar-spacer" />
+      <div className="profile-menu-wrap" ref={profileMenuRef}>
+        {profileMenuOpen && !isDemo && <div className="profile-popover" role="menu"><Link href="/profile" role="menuitem" onClick={() => setProfileMenuOpen(false)}><UserRound size={16} /><span><b>Mon profil</b><small>Voir mes statistiques</small></span></Link><button role="menuitem" onClick={signOut}><LogOut size={16} /> Déconnexion</button></div>}
+        <button className="profile-card" aria-expanded={profileMenuOpen} aria-haspopup="menu" onClick={() => !isDemo && setProfileMenuOpen(open => !open)}><div className="avatar">{isDemo ? "QA" : initials}</div><div><p className="profile-name">{isDemo ? "Profil QA" : email.split("@")[0]}</p><p className="profile-state">{isDemo ? "Mode visite" : "Synchronisé"}</p></div><ChevronRight size={18} /></button>
+      </div>
+    </aside>
+    {menuOpen && <button className="menu-backdrop" onClick={() => setMenuOpen(false)} aria-label="Fermer le menu" />}
+    <main className="main-content profile-page">
+    <header className="profile-header"><div><button className="icon-button mobile-menu" onClick={() => setMenuOpen(true)} aria-label="Ouvrir le menu"><Menu size={21} /></button><span>Mon profil</span></div><span>{isDemo ? "Aperçu en mode visite" : "Statistiques synchronisées"}</span></header>
     <div className="profile-content">
       <section className="profile-intro"><div className="profile-big-avatar">{initials}</div><div><p className="eyebrow">{isDemo ? "Mode visite" : "Mon profil"}</p><h1>{isDemo ? "Profil QA" : email.split("@")[0]}</h1><p>{isDemo ? "Compte de recette en lecture seule" : email}</p></div></section>
       <section className="profile-filters"><label><CalendarDays size={15} /> Période<select value={period} onChange={event => setPeriod(event.target.value as Period)}><option value="7">7 derniers jours</option><option value="30">30 derniers jours</option><option value="all">Depuis le début</option></select></label><label><Layers3 size={15} /> Paquet<select value={deckId} onChange={event => setDeckId(event.target.value)}><option value="all">Tous les paquets</option>{decks.map(deck => <option value={deck.id} key={deck.id}>{deck.title}</option>)}</select></label></section>
@@ -66,5 +101,6 @@ export function ProfileDashboard({ email, decks, cards, reviews, isDemo }: { ema
       </section>
       {!stats.filtered.length && <div className="profile-empty">Les graphiques se rempliront dès que tu auras répondu à quelques cartes avec ces filtres.</div>}
     </div>
-  </main>;
+    </main>
+  </div>;
 }
