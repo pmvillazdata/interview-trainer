@@ -39,5 +39,13 @@ export default async function Home() {
     });
   }
 
-  return <Dashboard initialUser={user ? { id: user.id, email: user.email ?? "" } : null} initialDecks={decks} initialCards={cards} />;
+  const today = new Intl.DateTimeFormat("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Paris",
+  }).format(new Date());
+
+  return <Dashboard today={today} initialUser={user ? { id: user.id, email: user.email ?? "" } : null} initialDecks={decks} initialCards={cards} />;
 }

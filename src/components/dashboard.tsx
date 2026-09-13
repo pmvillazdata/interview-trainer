@@ -12,14 +12,14 @@ import {
   LogOut,
   Menu,
   Plus,
-  Search,
   Sparkles,
   Target,
+  UserRound,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { IFRS_DECK, IFRS_DECK_TITLE } from "@/data/ifrs-deck";
 import { createClient } from "@/lib/supabase/client";
 import type { AppUser, Deck, StudyCard } from "@/lib/types";
@@ -81,12 +81,20 @@ function getNextDueDate(grade: Grade) {
 }
 
 type DashboardProps = {
+  today: string;
   initialUser: AppUser | null;
   initialDecks: Deck[];
   initialCards: StudyCard[];
 };
 
-export function Dashboard({ initialUser, initialDecks, initialCards }: DashboardProps) {
+const greetings = [
+  "Bonjour", "Hello", "Hallo", "Hola", "Ciao", "Olá", "Goedendag", "Bună ziua",
+  "Dzień dobry", "Dobrý den", "Dobrý deň", "Jó napot", "Goddag", "Hej", "Hyvää päivää",
+  "Tere", "Labdien", "Laba diena", "Dober dan", "Dobar dan", "Добър ден", "Καλημέρα",
+  "Dia dhuit", "Bongu",
+] as const;
+
+export function Dashboard({ today, initialUser, initialDecks, initialCards }: DashboardProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [answerVisible, setAnswerVisible] = useState(false);
@@ -97,12 +105,28 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
   const [showCardForm, setShowCardForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [greetingIndex, setGreetingIndex] = useState(0);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
   const total = cards.length + reviewed;
   const progress = useMemo(() => total ? Math.round((reviewed / total) * 100) : 100, [reviewed, total]);
   const currentCard = cards[0];
   const displayDecks = initialUser ? decks : demoDecks;
   const initials = initialUser?.email.slice(0, 2).toUpperCase() ?? "PM";
   const hasIfrsDeck = decks.some((deck) => deck.title === IFRS_DECK_TITLE);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setGreetingIndex((index) => (index + 1) % greetings.length), 2_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    function closeProfileMenu(event: MouseEvent) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) setProfileMenuOpen(false);
+    }
+    document.addEventListener("mousedown", closeProfileMenu);
+    return () => document.removeEventListener("mousedown", closeProfileMenu);
+  }, []);
 
   async function gradeCard(grade: Grade) {
     if (!currentCard) return;
@@ -240,18 +264,27 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
           <a className="nav-item" href="#decks">
             <Layers3 size={19} /> Mes paquets
           </a>
+          <Link className="nav-item" href={initialUser ? "/profile" : "/login"}>
+            <UserRound size={19} /> Mon profil
+          </Link>
         </nav>
 
         <div className="sidebar-spacer" />
 
-        <Link className="profile-card" href={initialUser ? "/profile" : "/login"}>
-          <div className="avatar">{initials}</div>
-          <div>
-            <p className="profile-name">{initialUser ? initialUser.email.split("@")[0] : "Mon espace"}</p>
-            <p className="profile-state">{initialUser ? "Synchronisé" : "Mode démo"}</p>
-          </div>
-          <ChevronRight size={18} />
-        </Link>
+        <div className="profile-menu-wrap" ref={profileMenuRef}>
+          {profileMenuOpen && initialUser && <div className="profile-popover" role="menu">
+            <Link href="/profile" role="menuitem" onClick={() => setProfileMenuOpen(false)}><UserRound size={16} /><span><b>Mon profil</b><small>Voir mes statistiques</small></span></Link>
+            <button role="menuitem" onClick={signOut}><LogOut size={16} /> Déconnexion</button>
+          </div>}
+          <button className="profile-card" aria-expanded={profileMenuOpen} aria-haspopup="menu" onClick={() => initialUser ? setProfileMenuOpen((open) => !open) : router.push("/login")}>
+            <div className="avatar">{initials}</div>
+            <div>
+              <p className="profile-name">{initialUser ? initialUser.email.split("@")[0] : "Mon espace"}</p>
+              <p className="profile-state">{initialUser ? "Synchronisé" : "Mode démo"}</p>
+            </div>
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </aside>
 
       {menuOpen && <button className="menu-backdrop" onClick={() => setMenuOpen(false)} aria-label="Fermer le menu" />}
@@ -262,20 +295,15 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
             <Menu size={22} />
           </button>
           <div className="mobile-brand"><span>I</span> Interview Trainer</div>
-          <div className="search-wrap">
-            <Search size={18} />
-            <input aria-label="Rechercher" placeholder="Rechercher une carte…" />
-            <kbd>⌘ K</kbd>
-          </div>
-          {initialUser ? <button className="login-link logout-button" onClick={signOut}><LogOut size={15} /> Déconnexion</button> : <Link className="login-link" href="/login">Se connecter</Link>}
+          {!initialUser && <Link className="login-link" href="/login">Se connecter</Link>}
         </header>
 
         <div className="content-wrap">
           <section className="hero" id="today">
             <div>
-              <p className="eyebrow">Jeudi 10 septembre</p>
-              <h1>Bonjour 👋</h1>
-              <p className="hero-copy">Une petite session aujourd’hui, un entretien beaucoup plus serein demain.</p>
+              <p className="eyebrow">{today}</p>
+              <h1 className="rotating-greeting" aria-live="off">{greetings[greetingIndex]}</h1>
+              <blockquote className="hero-copy">“A small session today, a much calmer interview tomorrow.” <cite>— D. N.</cite></blockquote>
             </div>
             <button className="secondary-button" onClick={() => initialUser ? setShowCardForm(true) : router.push("/login")}><Plus size={18} /> Nouvelle carte</button>
           </section>
@@ -377,7 +405,7 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
           <a href="#decks"><Layers3 size={20} /><span>Paquets</span></a>
           <button aria-label="Créer une carte" onClick={() => initialUser ? setShowCardForm(true) : router.push("/login")}><Plus size={22} /></button>
           <a href="#today"><Clock3 size={20} /><span>Réviser</span></a>
-          <Link href="/login"><div className="mini-avatar">{initials}</div><span>Compte</span></Link>
+          <Link href={initialUser ? "/profile" : "/login"}><div className="mini-avatar">{initials}</div><span>Profil</span></Link>
         </nav>
       </main>
 
