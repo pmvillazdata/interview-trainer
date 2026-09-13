@@ -13,7 +13,7 @@ type Period = "7" | "30" | "all";
 const resultLabels = ["À revoir", "Difficile", "Bien", "Facile"];
 const resultColors = ["#d87368", "#d9a441", "#2f9d78", "#3975c6"];
 
-export function ProfileDashboard({ email, decks, cards, reviews }: { email: string; decks: Deck[]; cards: Card[]; reviews: Review[] }) {
+export function ProfileDashboard({ email, decks, cards, reviews, isDemo }: { email: string; decks: Deck[]; cards: Card[]; reviews: Review[]; isDemo: boolean }) {
   const [period, setPeriod] = useState<Period>("30");
   const [deckId, setDeckId] = useState("all");
   const [now] = useState(() => Date.now());
@@ -48,9 +48,9 @@ export function ProfileDashboard({ email, decks, cards, reviews }: { email: stri
   const initials = email.slice(0, 2).toUpperCase();
 
   return <main className="profile-page">
-    <header className="profile-header"><Link href="/"><ArrowLeft size={17} /> Aujourd’hui</Link><span>Statistiques synchronisées</span></header>
+    <header className="profile-header"><Link href="/"><ArrowLeft size={17} /> Aujourd’hui</Link><span>{isDemo ? "Aperçu en mode visite" : "Statistiques synchronisées"}</span></header>
     <div className="profile-content">
-      <section className="profile-intro"><div className="profile-big-avatar">{initials}</div><div><p className="eyebrow">Mon profil</p><h1>{email.split("@")[0]}</h1><p>{email}</p></div></section>
+      <section className="profile-intro"><div className="profile-big-avatar">{initials}</div><div><p className="eyebrow">{isDemo ? "Mode visite" : "Mon profil"}</p><h1>{isDemo ? "Aperçu du profil" : email.split("@")[0]}</h1><p>{isDemo ? "Données de démonstration — aucune donnée personnelle affichée" : email}</p></div></section>
       <section className="profile-filters"><label><CalendarDays size={15} /> Période<select value={period} onChange={event => setPeriod(event.target.value as Period)}><option value="7">7 derniers jours</option><option value="30">30 derniers jours</option><option value="all">Depuis le début</option></select></label><label><Layers3 size={15} /> Paquet<select value={deckId} onChange={event => setDeckId(event.target.value)}><option value="all">Tous les paquets</option>{decks.map(deck => <option value={deck.id} key={deck.id}>{deck.title}</option>)}</select></label></section>
       <section className="profile-kpis">
         <article><span><BookOpen /></span><div><p>Cartes jouées</p><b>{stats.played}</b><small>sur la période</small></div></article>

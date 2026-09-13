@@ -264,7 +264,7 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
           <a className="nav-item" href="#decks">
             <Layers3 size={19} /> Mes paquets
           </a>
-          <Link className="nav-item" href={initialUser ? "/profile" : "/login"}>
+          <Link className="nav-item" href="/profile">
             <UserRound size={19} /> Mon profil
           </Link>
         </nav>
@@ -276,7 +276,7 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
             <Link href="/profile" role="menuitem" onClick={() => setProfileMenuOpen(false)}><UserRound size={16} /><span><b>Mon profil</b><small>Voir mes statistiques</small></span></Link>
             <button role="menuitem" onClick={signOut}><LogOut size={16} /> Déconnexion</button>
           </div>}
-          <button className="profile-card" aria-expanded={profileMenuOpen} aria-haspopup="menu" onClick={() => initialUser ? setProfileMenuOpen((open) => !open) : router.push("/login")}>
+          <button className="profile-card" aria-expanded={profileMenuOpen} aria-haspopup="menu" onClick={() => initialUser ? setProfileMenuOpen((open) => !open) : router.push("/profile")}>
             <div className="avatar">{initials}</div>
             <div>
               <p className="profile-name">{initialUser ? initialUser.email.split("@")[0] : "Mon espace"}</p>
@@ -405,7 +405,7 @@ export function Dashboard({ today, initialUser, initialDecks, initialCards }: Da
           <a href="#decks"><Layers3 size={20} /><span>Paquets</span></a>
           <button aria-label="Créer une carte" onClick={() => initialUser ? setShowCardForm(true) : router.push("/login")}><Plus size={22} /></button>
           <a href="#today"><Clock3 size={20} /><span>Réviser</span></a>
-          <Link href={initialUser ? "/profile" : "/login"}><div className="mini-avatar">{initials}</div><span>Profil</span></Link>
+          <Link href="/profile"><div className="mini-avatar">{initials}</div><span>Profil</span></Link>
         </nav>
       </main>
 

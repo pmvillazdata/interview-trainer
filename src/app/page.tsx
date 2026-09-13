@@ -1,8 +1,10 @@
 import { Dashboard } from "@/components/dashboard";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import type { Deck, StudyCard } from "@/lib/types";
 
 export default async function Home() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) redirect("/profile");
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
