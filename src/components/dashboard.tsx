@@ -244,7 +244,7 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
 
         <div className="sidebar-spacer" />
 
-        <Link className="profile-card" href={initialUser ? "#account" : "/login"}>
+        <Link className="profile-card" href={initialUser ? "/profile" : "/login"}>
           <div className="avatar">{initials}</div>
           <div>
             <p className="profile-name">{initialUser ? initialUser.email.split("@")[0] : "Mon espace"}</p>

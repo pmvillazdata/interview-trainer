@@ -252,6 +252,55 @@ a { color: inherit; text-decoration: none; }
 .question-type-picker small { margin-top: 3px; color: #8a919e; font-size: 9px; }
 .choice-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
 
+.profile-page { min-height: 100vh; background: #f8fafb; }
+.profile-header { min-height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 34px; border-bottom: 1px solid var(--line); background: white; }
+.profile-header a { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.profile-header > span { color: #84909e; font-size: 10px; }
+.profile-content { width: min(1040px, calc(100% - 50px)); margin: auto; padding: 48px 0 90px; }
+.profile-intro { display: flex; align-items: center; gap: 18px; }
+.profile-big-avatar { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 50%; color: white; background: #034078; font-size: 17px; font-weight: 700; }
+.profile-intro h1 { margin: 0; font-size: 31px; font-weight: 400; letter-spacing: -.035em; }
+.profile-intro > div > p:last-child { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.profile-filters { display: flex; gap: 10px; margin: 35px 0 18px; }
+.profile-filters label { min-height: 41px; display: flex; align-items: center; gap: 7px; padding: 0 11px; border: 1px solid var(--line); border-radius: 9px; color: #778190; background: white; font-size: 10px; font-weight: 600; }
+.profile-filters select { border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 11px; }
+.profile-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.profile-kpis article { min-height: 120px; display: flex; align-items: flex-start; gap: 13px; padding: 19px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.profile-kpis article > span { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 9px; color: #1282a2; background: #edf7f9; }
+.profile-kpis svg { width: 17px; }
+.profile-kpis p { margin: 0 0 6px; color: #758090; font-size: 10px; }
+.profile-kpis b { display: block; font-size: 25px; font-weight: 500; }
+.profile-kpis small { color: #a0a7b0; font-size: 9px; }
+.profile-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 14px; margin-top: 14px; }
+.analytics-card { min-height: 300px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.analytics-heading { min-height: 49px; display: flex; align-items: flex-start; justify-content: space-between; }
+.analytics-heading h2 { margin: 0; font-size: 17px; font-weight: 500; }
+.analytics-heading > svg { color: #a0a8b2; }
+.activity-chart { height: 185px; display: grid; grid-template-columns: repeat(14,1fr); align-items: end; gap: 7px; padding-top: 18px; }
+.activity-chart > div { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; }
+.activity-chart i { width: 100%; min-height: 5px; border-radius: 4px 4px 2px 2px; background: linear-gradient(#1282a2,#034078); }
+.activity-chart span { color: #9da5af; font-size: 8px; text-transform: uppercase; }
+.success-donut { width: 51px; height: 51px; display: grid; place-items: center; border-radius: 50%; position: relative; }
+.success-donut::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: white; }
+.success-donut span { position: relative; z-index: 1; font-size: 9px; font-weight: 700; }
+.result-list, .horizontal-bars { display: grid; gap: 15px; margin-top: 24px; }
+.result-list > div { display: grid; grid-template-columns: 76px 1fr 22px; align-items: center; gap: 8px; }
+.result-list > div > span { display: flex; align-items: center; gap: 6px; color: #667085; font-size: 9px; }
+.result-list > div > span i { width: 6px; height: 6px; border-radius: 50%; }
+.result-list > div > div, .horizontal-bars > div > div { height: 6px; overflow: hidden; border-radius: 99px; background: #edf0f3; }
+.result-list > div > div i, .horizontal-bars > div > div i { display: block; height: 100%; border-radius: inherit; }
+.result-list > div > b, .horizontal-bars b { text-align: right; font-size: 10px; }
+.horizontal-bars > div { display: grid; grid-template-columns: 80px 1fr 25px; align-items: center; gap: 10px; }
+.horizontal-bars span { color: #667085; font-size: 10px; }
+.horizontal-bars i { background: #1282a2; }
+.format-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
+.format-breakdown > div { display: flex; align-items: center; gap: 11px; padding: 15px; border-radius: 10px; background: #f7f9fa; }
+.format-breakdown > div > span { width: 47px; height: 47px; display: grid; place-items: center; border-radius: 50%; color: white; font-size: 11px; font-weight: 700; }
+.format-simple { background: #034078; }.format-qcm { background: #1282a2; }
+.format-breakdown b, .format-breakdown small { display: block; }
+.format-breakdown b { font-size: 10px; }.format-breakdown small { margin-top: 3px; color: #9099a5; font-size: 8px; }
+.profile-empty { margin-top: 14px; padding: 14px; border-radius: 9px; color: #667085; background: #eef7f9; text-align: center; font-size: 11px; }
+
 @media (max-width: 980px) {
   .sidebar { transform: translateX(-100%); transition: transform .25s ease; box-shadow: 20px 0 70px rgba(0,0,0,.25); }
   .sidebar-open { transform: translateX(0); }
@@ -313,4 +362,14 @@ a { color: inherit; text-decoration: none; }
   .deck-question { grid-template-columns: 28px 1fr auto; gap: 8px; min-height: 96px; }
   .deck-answer { margin-left: 28px; padding: 15px; }
   .question-type-picker, .choice-fields { grid-template-columns: 1fr; }
+  .profile-header { min-height: 62px; padding: 0 15px; }
+  .profile-header > span { display: none; }
+  .profile-content { width: calc(100% - 30px); padding-top: 30px; }
+  .profile-filters { display: grid; grid-template-columns: 1fr; }
+  .profile-filters label { justify-content: space-between; }
+  .profile-kpis { grid-template-columns: 1fr 1fr; }
+  .profile-kpis article { min-height: 105px; padding: 14px; }
+  .profile-grid { grid-template-columns: 1fr; }
+  .activity-chart { gap: 4px; }
+  .format-breakdown { grid-template-columns: 1fr; }
 }
