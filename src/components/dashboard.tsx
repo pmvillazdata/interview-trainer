@@ -1,12 +1,10 @@
 "use client";
 
 import {
-  BarChart3,
   BookOpen,
   BriefcaseBusiness,
   CheckCircle2,
   ChevronRight,
-  CircleHelp,
   Clock3,
   Home,
   Layers3,
@@ -15,7 +13,6 @@ import {
   Menu,
   Plus,
   Search,
-  Settings,
   Sparkles,
   Target,
   X,
@@ -202,24 +199,9 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
           <a className="nav-item" href="#decks">
             <Layers3 size={19} /> Mes paquets
           </a>
-          <a className="nav-item" href="#progress">
-            <BarChart3 size={19} /> Progression
-          </a>
         </nav>
 
         <div className="sidebar-spacer" />
-
-        <div className="sidebar-card">
-          <div className="sidebar-card-icon"><Sparkles size={18} /></div>
-          <p className="sidebar-card-title">Objectif de la semaine</p>
-          <p className="sidebar-card-value">5 jours sur 7</p>
-          <div className="mini-progress"><span style={{ width: "71%" }} /></div>
-        </div>
-
-        <nav className="secondary-nav" aria-label="Réglages">
-          <a className="nav-item" href="#help"><CircleHelp size={18} /> Aide</a>
-          <a className="nav-item" href="#settings"><Settings size={18} /> Réglages</a>
-        </nav>
 
         <Link className="profile-card" href={initialUser ? "#account" : "/login"}>
           <div className="avatar">{initials}</div>
@@ -301,22 +283,6 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
               )}
             </article>
 
-            <aside className="streak-card" id="progress">
-              <div className="streak-top">
-                <div className="flame">🔥</div>
-                <div><strong>7 jours</strong><span>Série en cours</span></div>
-              </div>
-              <div className="week-row">
-                {["L", "M", "M", "J", "V", "S", "D"].map((day, index) => (
-                  <div key={`${day}-${index}`} className="week-day">
-                    <span>{day}</span>
-                    <i className={index < 4 ? "day-done" : index === 4 ? "day-today" : ""}>{index < 4 ? "✓" : ""}</i>
-                  </div>
-                ))}
-              </div>
-              <div className="streak-divider" />
-              <p className="streak-note"><span>+12%</span> de maîtrise cette semaine</p>
-            </aside>
           </section>
 
           <section className="decks-section" id="decks">
@@ -354,7 +320,7 @@ export function Dashboard({ initialUser, initialDecks, initialCards }: Dashboard
           <a className="mobile-nav-active" href="#today"><Home size={20} /><span>Aujourd’hui</span></a>
           <a href="#decks"><Layers3 size={20} /><span>Paquets</span></a>
           <button aria-label="Créer une carte" onClick={() => initialUser ? setShowCardForm(true) : router.push("/login")}><Plus size={22} /></button>
-          <a href="#progress"><BarChart3 size={20} /><span>Progression</span></a>
+          <a href="#today"><Clock3 size={20} /><span>Réviser</span></a>
           <Link href="/login"><div className="mini-avatar">{initials}</div><span>Compte</span></Link>
         </nav>
       </main>
