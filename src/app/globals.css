@@ -197,10 +197,10 @@ a { color: inherit; text-decoration: none; }
 .auth-brand span { display: inline-grid; width: 34px; height: 34px; font-size: 21px; }
 .auth-card h1 { margin: 0; font-size: 34px; font-weight: 300; line-height: 1.12; letter-spacing: -.035em; }
 .auth-copy { margin: 16px 0 29px; color: var(--muted); font-size: 14px; line-height: 1.65; }
-.auth-form label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 750; }
-.email-field { height: 49px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #ddd7cf; border-radius: 12px; color: #aaa49c; }
-.email-field:focus-within { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-soft); }
-.email-field input { width: 100%; border: 0; outline: 0; color: var(--ink); }
+.auth-form label { display: block; margin: 16px 0 8px; font-size: 12px; font-weight: 750; }
+.auth-field { height: 49px; display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #ddd7cf; border-radius: 12px; color: #aaa49c; }
+.auth-field:focus-within { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-soft); }
+.auth-field input { width: 100%; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit; }
 .auth-form > button { width: 100%; height: 48px; display: flex; align-items: center; justify-content: center; margin-top: 13px; border: 0; border-radius: 9px; color: white; background: #001f54; cursor: pointer; font-size: 13px; font-weight: 600; }
 .auth-form > button:disabled { cursor: not-allowed; opacity: .45; }
 .setup-note { display: flex; gap: 11px; margin-top: 23px; padding: 14px; border-radius: 12px; color: #756d65; background: #f7f4ef; }
@@ -210,6 +210,10 @@ a { color: inherit; text-decoration: none; }
 .auth-success { padding: 20px 0; text-align: center; }
 .auth-success svg { margin: 0 auto 20px; color: var(--mint); }
 .auth-success p { color: var(--muted); line-height: 1.6; }
+.auth-options { display: flex; justify-content: space-between; gap: 14px; margin-top: 18px; }
+.auth-options button, .auth-text-button { padding: 0; border: 0; color: #034078; background: transparent; cursor: pointer; font-size: 11px; font-weight: 650; text-align: left; }
+.auth-options button:last-child { text-align: right; }
+.auth-text-button { margin-top: 12px; font-size: 12px; }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
